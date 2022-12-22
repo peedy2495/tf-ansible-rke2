@@ -1,0 +1,45 @@
+- name: ansible rootkits
+  block:
+    - name: pull locally ansible-rootkits rule
+      git:
+        repo: https://github.com/lablabs/ansible-role-rke2.git
+        dest: "{{ playbook_dir }}/ansible-role-rke2"
+        clone: yes
+        recursive: yes
+        update: yes
+        force: yes
+        version: master
+      ignore_errors: true
+
+    #- name: modify ansible-rootkits role vars
+    #  lineinfile:
+    #    path: "{{ playbook_dir }}/ansible-role-rke2/defaults/main.yml"
+    #    regexp: "^(.*){{ item.key }}:"
+    #    line: "{{ item.key }}: {{ item.value }}"
+    #    state: present
+    #  with_items:
+    #    - key: "rkhunter"
+    #      value: "true"
+    #    - key: "chkrootkit"
+    #      value: "true"
+    #    - key: "unhide"
+    #      value: "true"
+    #    - key: "shelldetector"
+    #      value: "false"
+    #    - key: "antirootkits_mail_to"
+    #      value: "{{ mail_dest }}"
+    #    - key: "antirootkits_mail_from"
+    #      value: "{{ mail_dest }}"
+  connection: local
+  vars:
+    ansible_become: false
+  tags:
+    - prepare
+    - ext_roles
+    - role-rke2
+#- name: play ansible-antirootkits role
+#  import_role:
+#    name: ansible-antirootkits
+#  tags:
+#    - ext_roles
+#    - role-rke2

@@ -1,0 +1,42 @@
+- name: upgrade system
+  block:
+    - name: killing any running update process
+      shell: pkill apt-get; pkill dpkg; sleep 2
+
+    - name: apt - upgrading
+      apt:
+        update_cache: yes
+        upgrade: yes
+      register: apt_upgrade
+      retries: 5
+      until: apt_upgrade is success
+  notify: reboot system
+  tags:
+    - prepare
+    - upgrade
+
+- name: apt -autoremove orphanned packages
+  apt:
+    autoremove: yes
+  tags:
+    - prepare
+    - upgrade
+
+- name: run queued handlers
+  meta: flush_handlers
+  tags:
+    - prepare
+    - upgrade
+
+- name: apt - software-default
+  block:
+    - name: running software installation
+      apt:
+        pkg:
+          - curl
+          - unzip
+        state: present
+        update_cache: yes
+  tags:
+    - prepare
+    - software

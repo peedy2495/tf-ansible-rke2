@@ -1,0 +1,6 @@
+.vscode
+id_*
+ansible-role-rke2
+.terraform*
+terraform.*
+token.export
